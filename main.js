@@ -78,7 +78,6 @@ srv.addService('index.html', textFileService(function(path, query) {
 })).addService('cd_browse', textFileService(function(path, query) {
     return "cd_browse_" + (query.agent ? "albums" : "agents") + ".html";
 })).addService('dir', function(path, query, resp) {
-    // just assume it's up
     resp.passObj(function(callback) {
         var f = query.agent ? cd + "/" + decodeURIComponent(query.agent) : cd;
         fs.readdir(f, function(err, files) {
@@ -90,7 +89,6 @@ srv.addService('index.html', textFileService(function(path, query) {
     });
 }).addService('launch', function(path, query, resp) {
     if (query.what == 'cd') {
-        // just assume it's up
         var cwd = cd + "/" + decodeURI(query.agent) + "/" + decodeURIComponent(query.album);
         fs.readdir(cwd, function(err, files) {
             if (err) {
