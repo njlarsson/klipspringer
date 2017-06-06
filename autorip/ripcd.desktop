@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Icon=gnome-panel-launcher
+Name=ripcd
+Exec=/home/jesper/bin/ripcd.sh %U
+Comment=cd rip script
+X-Desktop-File-Install-Version=0.22

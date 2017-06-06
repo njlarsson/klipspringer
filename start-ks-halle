@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Server start script tailored for personal use, don't expect explanation.
+
+echo starting ks >> ~/.kliplog
+#Xvfb :99 -screen 0 1x1x8 &
+#export DISPLAY=:99
+#pulseaudio --start
+date >> ~/.kliplog
+cd /home/pi/klipspringer
+/usr/local/bin/node main.js /mnt/klipspringer 8080 'alsa:device=hw=1,0' DAC /home/pi/klipspringer:/home/pi/jars/jflac.jar /dev/input/event1 >> ~/.kliplog 2>&1 &
+#node ks.js /mnt/klipspringer 8080 'alsa:device=hw=1,0' >> ~/.kliplog 2>&1 &
+#node ks.js /mnt/klipspringer 8080 'pulse::0' >> ~/.kliplog 2>&1 &

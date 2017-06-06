@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon=gnome-panel-launcher
+Name=ripdvd
+Exec=/usr/local/sbin/ripdvd %U
+Comment=dvd rip pseudo-script
+X-Desktop-File-Install-Version=0.22

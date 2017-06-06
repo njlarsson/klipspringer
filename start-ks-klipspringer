@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Server start script tailored for personal use, don't expect explanation.
+
+echo starting ks >> ~/.kliplog
+date >> ~/.kliplog
+cd /home/klipspringer/klipspringer
+#node ks.js /mnt/klipspringer 8080 'alsa:device=hw=1,0' >> ~/.kliplog 2>&1 &
+node main.js /media/klipspringer/porsche 8080 'pulse::0' DAC /home/klipspringer/klipspringer:/home/klipspringer/jars/jflac.jar >> ~/.kliplog 2>&1 &

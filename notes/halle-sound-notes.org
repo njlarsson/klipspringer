@@ -1,0 +1,61 @@
+(Old notes from pulseaudio experiments on halle, not currently of interest since
+I gave up using pulseaudio on halle.)
+
+Did to try to get better sound:
+
+1. Från http://dbader.org/blog/crackle-free-audio-on-the-raspberry-pi-with-mpd-and-pulseaudio
+
+"Edit /etc/pulse/default.pa and remove or comment out load-module
+module-suspend-on-idle. This is the important part that prevents
+PulseAudio from sending the audio hardware to sleep."
+
+Det fick effekt, brus konstant, men klicket vid audio-på var
+egentligen inte mitt problem
+
+2. Startade alsa-mixern och höjde ljudet till max. Det blev bättre,
+   bättre signal-till-brus-förhållande
+
+3. Från http://www.raspberrypi.org/forums/viewtopic.php?f=28&t=52942
+
+Page allocation failures eliminated by decreasing the memory reserved for the GPU, in my case by setting gpu_mem_512=32 in /boot/config.txt.
+
+Audio clicks eliminated by limiting the USB speed with dwc_otg.speed=1 in /boot/cmdline.txt.
+
+Bootade sedan om, men ingen skillnad.
+
+4. Avinstallerade pulseaudio, problemet försvann!
+
+5. Installerade igen. Om jag ger "-ao alsa" till mplayer spelar den
+   fint. Hackar med pulse.
+
+6. Baserat på http://ubuntuforums.org/showthread.php?t=2203584
+
+Editing /etc/pulse/daemon.conf, changing
+
+; realtime-scheduling = yes
+
+to
+
+realtime-scheduling = no
+
+solved the problem.
+
+6. Ändrat tillbaka grejorna jag ändrade i boot (det fick
+   usb-tangentbordet att dö), och även slagit på
+   suspend till pulse igen. Kan överväga att ta bort om det knäpper.
+
+7. Tog till slut bort pulseaudio igen, den verkar få ljudet att gå
+   tungt, även om man spelar med alsa.
+
+8. Efter att jag börjat köra med DAC gick det mindre tungt. Jag lade
+   tillbaka pulseaudio igen
+
+============================================
+
+To fix glitch problems on tunneling, I commented out the detect lines
+in the default.pa file on halle, and added a line with a manual
+alsa-sink, with a very large buffer. This almost fixed the problem
+(maybe buffer should be even larger), but when playing combined, the
+sound is now out of sync between the rooms. So probably need to set
+same buffer size for both. And we can probably keep the detected ones
+anyway. Too tired now, no more testing today.

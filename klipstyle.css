@@ -1,0 +1,34 @@
+@viewport {
+    zoom: 1.0;
+    width: extend-to-zoom;
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 1.5em;
+} 
+
+button {
+    font-size: 1.5em;
+} 
+
+a:link {
+    color: black;
+    text-decoration: none;
+}
+
+a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+.click_choose:hover, a:hover, button:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.click_choose:active, a:active, button:active {
+    color: white;
+    background-color: black;
+    text-decoration: none;
+}
