@@ -56,8 +56,8 @@ exports.create = function(stream, device) {
     intf.quit = function(query, callback) {
         quitters += 1;
         if (proc) {
-            if (callback) { intf.onExit = callback; } // override!
             proc.stdin.write("quit\n");
+            callback(null, { ok: true });
             proc_util.die(function() { return proc; },
                           [{ signal: 'SIGTERM', timeout: 3000 },
                            { signal: 'SIGKILL', timeout: 10000 }]);

@@ -63,7 +63,7 @@ var playStream = function(channel, notice) {
                 else     { notice.ok(); }
             });
         };
-        if (player) { player.quit(null, start); }
+        if (player) { player.onExit = start; player.quit(); }
         else        { start(); }
     } else {
         notice.err("Channel unavailable: " + query.channel);
@@ -103,7 +103,7 @@ srv.addService('index.html', textFileService(function(path, query) {
                         else     { indexHtml = "cd_player.html"; resp.passObj({ ok: true }); }
                     });
                 };
-                if (player) { player.quit(null, start); }
+                if (player) { player.onExit = start; player.quit(); }
                 else        { start(); }
             }
         });
