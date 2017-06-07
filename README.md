@@ -34,7 +34,7 @@ smartphone display.
 
 Try this to quick start a demo server:
 
-    wget http://klipspringer.avadeaux.net/klipspringer-site.tar.gz
+    wget http://avadeaux.net/klipspringer-site.tar.gz
     tar xfz klipspringer-site.tar.gz
     cd klipspringer-site
     git clone git@github.com:njlarsson/klipspringer.git
