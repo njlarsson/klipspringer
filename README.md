@@ -70,7 +70,7 @@ audio setup. Explanation of the arguments:
     example, you might say `DAC` if you have an external audio device plugged
     in, whose name begins with these letters.
  * `../klipspringer:../jars/jflac.jar` The Java class path for the flac file player, given relatively
-    to the `cd` directory.
+    to the `cd` directory. The given path is correct for the `klipspringer-site` demo.
 
 For more information, read the code. :)
 
