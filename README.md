@@ -1,30 +1,31 @@
-# klipspringer
+# Klipspringer
 A rather minimal music playing system. The ambition is not for this to
 be general streamlined product, it's created for personal use, but
 most of the code is reasonably general, so maybe you can find
 something useful here.
 
-The point of Klipspringer is to replaces a cd player plus radio with a
+The point of Klipspringer is to replace a cd player plus radio with a
 small computer server with audio playing capabilities. It consists of:
 
  1. An http server to be run with Node.js, that let's you:
 
     * Browse a “cd database”, a file hierarchy containing flac files in
       an `artist/album/*.flac` structure, and instruct the server to
-      play then, server-side. Currently, you can only start a whole
+      play an album, on the server side. Currently, you can only start a whole
       album at a time.
     * Play a radio channel via a web stream, using
       [mplayer](http://www.mplayerhq.hu/). The radio channels given in
       the code are four Swedish [Sveriges radio](http://sverigesradio.se/) channels, which you
-      are might not be able to access unless you are
-      located in Sweden (so then radio playing won't work unless you replace them).
+      might not be able to access unless you are
+      located in Sweden (so then radio playing won't work unless you
+      replace the stream addresses).
     * Control the playing album/stream with a minimal cd-player style
       button set.
 
- 2. A flac file player written in Java, using the
-    [jflac](http://jflac.org/) flac decoding library, with a slave
-    interface on stdin/stdout that lets you pause, skip to next track
-    etc., and with cross-track buffering that allows playing a
+ 2. [A flac file player written in Java](https://github.com/njlarsson/klipspringer/tree/master/net/avadeaux/klipspringer),
+    using the [jflac](http://jflac.org/) flac decoding library, with a
+    slave interface on stdin/stdout that lets you pause, skip to next
+    track etc., and with cross-track buffering that allows playing a
     sequence of flac files without any gap.
 
 The web design in the interface is extremely rudimentary. I'd very
@@ -67,3 +68,11 @@ audio setup. Explanation of the arguments:
     to the `cd` directory.
 
 For more information, read the code. :)
+
+To do:
+
+ * Get metadata for the albums from Discogs.
+ * Create a search function for the metadata in the http interface.
+ * Improve the web design. This is low priority to me, but as
+   mentioned above I'd be happy to accept contributions from somebody
+   more skilled in web design/coding.
