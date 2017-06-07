@@ -54,7 +54,7 @@ exports.create = function(playCwd, classPath, tracks, device) {
     intf.quit = function(query, callback) {
         if (proc) {
             proc.stdin.write("quit\n");
-            callback(null, { ok, true });
+            if (callback) { callback(null, { ok: true }); }
             proc_util.die(function() { return proc; },
                           [{ signal: 'SIGTERM', timeout: 3000 },
                            { signal: 'SIGKILL', timeout: 10000 }]);

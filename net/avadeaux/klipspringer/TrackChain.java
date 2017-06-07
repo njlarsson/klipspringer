@@ -42,8 +42,16 @@ class TrackChain {
 
     private static Mixer.Info getPreferredMixerInfo(String namePrefix) {
         Mixer.Info[] mxInfoArr = AudioSystem.getMixerInfo();
-        for (Mixer.Info info : mxInfoArr) {
-            if (info.getName().startsWith(namePrefix)) { return info; }
+        if (namePrefix == null || namePrefix.length() == 0) {
+            System.err.println("Available mixers:");
+            System.err.println(mxInfoArr[0].getName() + " (default)");
+            for (int i = 1; i < mxInfoArr.length; i++) {
+                System.err.println(mxInfoArr[i].getName());                
+            }
+        } else {
+            for (Mixer.Info info : mxInfoArr) {
+                if (info.getName().startsWith(namePrefix)) { return info; }
+            }
         }
         return mxInfoArr[0];
     }

@@ -1,13 +1,14 @@
 // Starts server. Arguments: /path/to/cd port device
 
 var fs = require('fs');
+var ip = require('ip');
 var http_server = require('./http_server');
 var macros = require('./macros');
 var tracks_jplayer = require('./tracks_jplayer');
 var stream_mplayer = require('./stream_mplayer');
 var numkeys = require('./numkeys');
-var debug = require("./debug");
- 
+var debug = require('./debug');
+
 var base = process.argv[2];
 var port = process.argv[3];
 var device = process.argv[4];
@@ -82,24 +83,26 @@ srv.addService('index.html', textFileService(function(path, query) {
         var f = query.agent ? cd + "/" + decodeURIComponent(query.agent) : cd;
         fs.readdir(f, function(err, files) {
             var val = {};
-            if (err) { val.err = err; }
+            if (err) { val.err = err.toString(); }
             else     { val.dir = files; }
             callback(val);
         });
     });
 }).addService('launch', function(path, query, resp) {
     if (query.what == 'cd') {
-        var cwd = cd + "/" + decodeURI(query.agent) + "/" + decodeURIComponent(query.album);
-        fs.readdir(cwd, function(err, files) {
+        var albumDir = decodeURI(query.agent)+'/'+decodeURIComponent(query.album);
+        fs.readdir(cd+'/'+albumDir, function(err, files) {
             if (err) {
-                resp.passObj({ err: err });
+                resp.passObj({ err: err.toString() });
             } else {
-                files = files.filter(function(fnam) { return /\.flac$/.test(fnam); });
+                files = files
+                    .filter(function(fnam) { return /\.flac$/.test(fnam); })
+                    .map(function(f) { return albumDir+'/'+f; });
                 var start = function() {
-                    player = tracks_jplayer.create(cwd, classPath, files, cardPrefix);
+                    player = tracks_jplayer.create(cd, classPath, files, cardPrefix);
                     player.onExit = exitPlayer;
                     player.start(null, function(err, effective) {
-                        if (err) {                               resp.passObj({ err: err }); }
+                        if (err) {                               resp.passObj({ err: err.toString() }); }
                         else     { indexHtml = "cd_player.html"; resp.passObj({ ok: true }); }
                     });
                 };
@@ -110,7 +113,7 @@ srv.addService('index.html', textFileService(function(path, query) {
     } else if (query.what == 'sr') {
         playStream(query.channel, {
             ok:    function() { indexHtml = "radio_player.html"; resp.passObj({ ok: true }); },
-            error: function(msg) { resp.passObj({ err: msg }); }
+            error: function(msg) { resp.passObj({ err: msg.toString() }); }
         });
     } else {
         resp.passObj({ err: "Unavailable to launch: " + query.what });
@@ -126,11 +129,13 @@ srv.addService('index.html', textFileService(function(path, query) {
         resp.passObj({ err: "cmd not available: " + query.cmd });
     }
 }).listen(port);
+console.log("Server expects commands at http://" + ip.address() + ":" + port);
+
 
 var radioButtonPlay = function(channel) {
     playStream(channel, {
         ok:    function() { debug("Playing radio "+channel, 1); },
-        error: function(msg) { debug("Error playing radio "+channel+": "+msg); }
+        error: function(msg) { debug("Error playing radio "+channel+": "+msg.toString()); }
     });
 };
 
