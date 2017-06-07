@@ -1,7 +1,37 @@
 # klipspringer
-A rather minimal music playing system.
+A rather minimal music playing system. The ambition is not for this to
+be general streamlined product, it's created for personal use, but
+most of the code is reasonably general, so maybe you can find
+something useful here.
 
-Try this to start a demo:
+The point of Klipspringer is to replaces a cd player plus radio with a
+small computer server with audio playing capabilities. It consists of:
+
+ 1. An http server to be run with Node.js, that let's you:
+
+    * Browse a “cd database”, a file hierarchy containing flac files in
+      an `artist/album/*.flac` structure, and instruct the server to
+      play then, server-side. Currently, you can only start a whole
+      album at a time.
+    * Play a radio channel via a web stream, using
+      [mplayer](http://www.mplayerhq.hu/). The radio channels given in
+      the code are four Swedish [Sveriges radio](http://sverigesradio.se/) channels, which you
+      are might not be able to access unless you are
+      located in Sweden (so then radio playing won't work unless you replace them).
+    * Control the playing album/stream with a minimal cd-player style
+      button set.
+
+ 2. A flac file player written in Java, using the
+    [jflac](http://jflac.org/) flac decoding library, with a slave
+    interface on stdin/stdout that lets you pause, skip to next track
+    etc., and with cross-track buffering that allows playing a
+    sequence of flac files without any gap.
+
+The web design in the interface is extremely rudimentary. I'd very
+much appreciate contributions to make it look nicer, particularly on a
+smartphone display.
+
+Try this to quick start a demo server:
 
     wget http://klipspringer.avadeaux.net/klipspringer-site.tar.gz
     tar xfz klipspringer-site.tar.gz
@@ -10,3 +40,30 @@ Try this to start a demo:
     cd klipspringer
     ./compile-jplayer.sh
     node main.js .. 8080 'pulse::0' '' ../klipspringer:../jars/jflac.jar
+
+You may need to modify some of the arguments in the last command to
+get it to work in your environment, in particular depending on your
+audio setup. Explanation of the arguments:
+
+ * `main.js` The main program file. There's no alternative here.
+ * `..` A directory that contains a `cd` subdirectory, where the “cd
+    database” flac
+    file hierarchy is. The `klipspringer-site` demo contains a single
+    “album” consisting of two Nine Inch Nails tracks, released under a
+    creative commons license.
+ * `8080` The port to access the server on. Replace with whatever you'd
+    like.
+ * `pulse::0` The audio output specification for mplayer, only used for the
+    radio stream playing.
+ * `''` The *mixer* prefix to use as audio output specification to the flac player. If this is
+    the empty string, as in the example, the player prints the names
+    of available mixers and uses the first one. If it's anything else
+    than the empty string, it's supposed to be a prefix of the name of
+    the mixer of choice. The player uses the first mixer that matches
+    this prefix, if any. (Otherwise it uses the first one again.) For
+    example, you might say `DAC` if you have an external audio device plugged
+    in, whose name begins with these letters.
+ * `../klipspringer:../jars/jflac.jar` The Java class path for the flac file player, given relatively
+    to the `cd` directory.
+
+For more information, read the code. :)
