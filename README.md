@@ -54,8 +54,13 @@ audio setup. Explanation of the arguments:
     creative commons license.
  * `8080` The port to access the server on. Replace with whatever you'd
     like.
- * `pulse::0` The audio output specification for mplayer, only used for the
-    radio stream playing.
+ * `pulse::0` The audio output specification for mplayer, only used
+    for the radio stream playing. This *pulse* argument works in Ubuntu,
+    which uses Pulseaudio as the standard audio playing option. If
+    you're on a Linux installation without Pulseaudio, you might want
+    something like `alsa:device=hw=0,0`, and if you're in Mac OS X you
+    can try `coreaudio`. Get the available options on your system with
+    `mplayer -ao help`.
  * `''` The *mixer* prefix to use as audio output specification to the flac player. If this is
     the empty string, as in the example, the player prints the names
     of available mixers and uses the first one. If it's anything else
