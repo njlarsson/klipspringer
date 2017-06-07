@@ -12,7 +12,8 @@ public class TrackPlayer {
     private long endMillis = System.currentTimeMillis();
 
     private TrackChain.Activity chainActiv = new TrackChain.Activity() {
-            public void playingNext() { synchronized (TrackPlayer.this) {
+            public void playingNext() {
+                synchronized (TrackPlayer.this) {
                     ++playingTrackNo;
                     TrackPlayer.this.notifyAll();
                 }
