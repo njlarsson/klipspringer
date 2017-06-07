@@ -76,7 +76,8 @@ For more information, read the code. :)
 
 To do:
 
- * Get metadata for the albums from Discogs.
+ * Support metadata for the albums, which is to be collected from
+   Discogs in a semi-automatic way.
  * Create a search function for the metadata in the http interface.
  * Improve the web design. This is low priority to me, but as
    mentioned above I'd be happy to accept contributions from somebody
