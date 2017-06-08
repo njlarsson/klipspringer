@@ -4,6 +4,17 @@ import javax.sound.sampled.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Player class with main method. Start with, e.g.
+ *
+ *    java net.avadeaux.klipspringer.TrackPlay 'DAC' 262144 0.1 *.flac
+ *
+ * Where DAC is an example of a prefix for the desired audio output mixer (if you give an empty
+ * string, the program will print the list of available options, and use the first one as default),
+ * 262144 is the internal buffer size in bytes (this is the buffer that is used to avoid gaps, needs
+ * to be large when reading flac data from a flimsy device, e.g. over wifi), and 0.1 is the number
+ * of seconds of buffer on the sound output side.
+ */
 public class TrackPlayer {
     private final ChainPlayer chains = new ChainPlayer();
     private final ArrayList<String> fnams = new ArrayList<String>();
