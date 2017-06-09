@@ -23,14 +23,25 @@ exports.create = function(stream, device) {
     for (opt in options) { args = args.concat(options[opt]); }
     args = args.concat(stream);
 
+    var title = "";
+
     intf.start = function(query, callback) {
+        var textbuf = '', endLine, icy;
         if (proc) {
             if (callback) { callback("Already started"); }
         } else {
             debug(mplayer + " " + args.join(" "), 1);
             
             proc = child_process.spawn(mplayer, args);
-            proc.stdout.on('data', function(buf) { debug(buf.toString(), 2); });
+            proc.stdout.on('data', function(buf) {
+                debug(buf.toString(), 2);
+                
+                textbuf += buf.toString();
+                while ((endLine = textbuf.indexOf('\n')) >= 0) {
+                    if ((icy = textbuf.match(/^ICY *Info: *StreamTitle='(.*)'/)) !== null) { title = icy[1]; }
+                    textbuf = textbuf.slice(endLine+1);
+                }
+            });
             proc.stderr.on('data', function(buf) { debug(buf.toString(), 2); });
             
             var exit = function (code) {
@@ -66,5 +77,12 @@ exports.create = function(stream, device) {
         }
     };
 
+    intf.get_title = function(query, callback) {
+        console.log("getting "+title);
+        if      (!proc)        { callback("Play process not active"); }
+        else if (title === '') { callback("Title not set"); }
+        else                   { callback(null, { title: title }); }
+    };
+    
     return intf;
 }

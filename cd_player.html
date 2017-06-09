@@ -27,12 +27,12 @@ var getTrack = function() {
     
     clearTimeout(trackTimer);
     sendCmd("get_track", function(ans) {
-        if (ans && ans.filename) {
+        if (ans.filename) {
 	    setTrack(ans.filename.slice(0, -5).replace(/_/g, " "));
             trackTimer = setTimeout(getTrack, 1000*(ans.remainest || 0.5));
-        } else if (ans && ans.err) {
+        } else {
             console.error(ans.err);
-	    setTrack(ans.err);
+	    setTrack('');
         }
     });
 };
@@ -54,7 +54,7 @@ var getTrackSoon = function() {
 
 <a href="/abs/sources.html"><button>&#x2302;</button></a>
 
-<div id="track"><p>Starting…</p></div>
+<div id="track"><p>Wait…</p></div>
 
 <script>
 vis(getTrack)
