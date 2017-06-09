@@ -3,8 +3,6 @@ package net.avadeaux.klipspringer;
 import java.util.LinkedList;
 
 class ChainPlayer implements Runnable {
-    interface Sentinel { void finished(); }
-    
     private final LinkedList<TrackChain> chains = new LinkedList<TrackChain>();
     private TrackChain playing;
     private boolean pendingPause = false;
