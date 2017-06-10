@@ -37,7 +37,7 @@ Try this to quick start a demo server:
     wget http://avadeaux.net/klipspringer-site.tar.gz
     tar xfz klipspringer-site.tar.gz
     cd klipspringer-site
-    git clone git@github.com:njlarsson/klipspringer.git
+    git clone https://github.com/njlarsson/klipspringer.git
     cd klipspringer
     ./compile-jplayer.sh
     npm install ip
