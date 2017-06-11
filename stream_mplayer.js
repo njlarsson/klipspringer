@@ -3,7 +3,7 @@ var fs = require('fs');
 var proc_util = require('./proc_util');
 var debug = require("./debug");
 
-exports.create = function(stream, device) {
+exports.create = function(stream, device, charset) {
     var proc = null;
     var quitters = 0;
 
@@ -26,7 +26,7 @@ exports.create = function(stream, device) {
     var title = null;
 
     intf.start = function(query, callback) {
-        var textbuf = '', endLine, icy;
+        var textbuf = '', endLine, m;
         if (proc) {
             if (callback) { callback("Already started"); }
         } else {
@@ -36,9 +36,10 @@ exports.create = function(stream, device) {
             proc.stdout.on('data', function(buf) {
                 debug(buf.toString(), 2);
                 
-                textbuf += buf.toString();
+                textbuf += buf.toString(charset);
                 while ((endLine = textbuf.indexOf('\n')) >= 0) {
-                    if ((icy = textbuf.match(/^ICY *Info: *StreamTitle='(.*)'/)) !== null) { title = icy[1]; }
+                    if (m = textbuf.match(/^ICY *Info: *StreamTitle='(.*)'/)) { title = m[1]; }
+                    else if (m = textbuf.match(/^ Album: (.*)\n/)) { title = m[1]; }
                     textbuf = textbuf.slice(endLine+1);
                 }
             });

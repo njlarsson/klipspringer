@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var ip = require('ip');
+var http = require('follow-redirects').http;
 var http_server = require('./http_server');
 var macros = require('./macros');
 var tracks_jplayer = require('./tracks_jplayer');
@@ -57,7 +58,7 @@ var playStream = function(channel, notice) {
     else                       { stream = null; }
     if (stream) {
         var start = function() {
-            player = stream_mplayer.create(stream, device);
+            player = stream_mplayer.create(stream, device, 'utf8');
             player.onExit = exitPlayer;
             player.start(null, function(err) {
                 if (err) { notice.error(err); }
@@ -74,7 +75,7 @@ var playStream = function(channel, notice) {
 var playPod = function(podid, notice) {
     var stream = "http://sverigesradio.se/topsy/senastepodd/"+podid+".mp3";
     var start = function() {
-        player = stream_mplayer.create(stream, device);
+        player = stream_mplayer.create(stream, device, 'latin1');
         player.onExit = exitPlayer;
         player.start(null, function(err) {
             if (err) { notice.error(err); }
@@ -85,6 +86,39 @@ var playPod = function(podid, notice) {
     else        { start(); }
 };
 
+var httpGet = function(host, path, param, callback) {
+    http.get({ host: host, path: path }, function(resp) {
+        if (resp.statusCode != 200) { callback("Not ok: "+resp.statusCode+' '+path); }
+        var body = '';
+        resp.on('data', function(d) { body += d; });
+        resp.on('end',  function()  { callback(null, body, param); });
+    });
+};
+
+var expandPodlist = function(dir, callback) {
+    var remain = dir.length;
+
+    for (var i = 0; i < dir.length; i += 1) {
+        httpGet('sverigesradio.se', dir[i].home, i, function(err, body, j) {
+            if (err) { dir[j].err = err.toString(); }
+            else {
+                var m = body.match(/href="http:\/\/api.sr.se\/api\/rss\/pod\/([0-9]+)"/);
+                if (m) { dir[j].podid = m[1]; }
+            }
+            if (--remain === 0) { callback({ dir: dir }); }
+        });
+    }
+};
+
+var extractPodlist = function(doc, callback) {
+    var exp = /<a href="([^"]+)">[\r\n ]*<span class="label">([^<]*)<\/span>/g;
+    var dir = [];
+    while (parts = exp.exec(doc)) {
+        dir.push({ name: parts[2], home: parts[1].replace('&amp;', '&') });
+    }
+    expandPodlist(dir, callback);
+};
+
 var srv = http_server.create();
 srv.addService('index.html', textFileService(function(path, query) {
     return indexHtml;
@@ -92,6 +126,8 @@ srv.addService('index.html', textFileService(function(path, query) {
     return path.substring(5);
 })).addService('cd_browse', textFileService(function(path, query) {
     return "cd_browse_" + (query.agent ? "albums" : "agents") + ".html";
+})).addService('sr_browse_pods', textFileService(function(path, query) {
+    return "sr_browse_pods.html";
 })).addService('dir', function(path, query, resp) {
     resp.passObj(function(callback) {
         var f = query.agent ? cd + "/" + decodeURIComponent(query.agent) : cd;
@@ -100,6 +136,13 @@ srv.addService('index.html', textFileService(function(path, query) {
             if (err) { val.err = err.toString(); }
             else     { val.dir = files; }
             callback(val);
+        });
+    });
+}).addService('list_pods', function(path, query, resp) {
+    resp.passObj(function(callback) {
+        httpGet('sverigesradio.se', '/sida/allaprogram.aspx?filterpodd=true', null, function(err, body) {
+            if (err) { callback({ err: err.toString() }); }
+            else     { extractPodlist(body, callback); }
         });
     });
 }).addService('launch', function(path, query, resp) {
