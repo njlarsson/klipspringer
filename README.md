@@ -41,6 +41,7 @@ Try this to quick start a demo server:
     cd klipspringer
     ./compile-jplayer.sh
     npm install ip
+    npm install follow-redirects
     node main.js .. 8080 'pulse::0' '' ../klipspringer:../jars/jflac.jar
 
 You may need to modify some of the arguments in the last command to
