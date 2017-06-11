@@ -68,7 +68,7 @@ var playStream = function(channel, notice) {
         if (player) { player.onExit = start; player.quit(); }
         else        { start(); }
     } else {
-        notice.err("Channel unavailable: " + query.channel);
+        notice.err("Channel unavailable: " + channel);
     }
 };
 
@@ -196,17 +196,51 @@ console.log("Server expects commands at http://" + ip.address() + ":" + port);
 
 var radioButtonPlay = function(channel) {
     playStream(channel, {
-        ok:    function() { debug("Playing radio "+channel, 1); },
+        ok:    function() { indexHtml = "radio_player.html"; debug("Playing radio "+channel, 1); },
         error: function(msg) { debug("Error playing radio "+channel+": "+msg.toString()); }
     });
 };
 
+var numSeqTimeout = 0, numSeq = "";
+var numSeqDuration = 3.0;
+
+var startNumSeq = function(time) {
+    numSeq = "";
+    numSeqTimeout = time + numSeqDuration;
+};
+
+var finishNumSeq = function(time) {
+    if (time < numSeqTimeout) {
+        playPod(numSeq, {
+            ok:    function()    { indexHtml = "radio_player.html"; debug("Playing pod "+numSeq, 1); },
+            error: function(msg) { debug("Error playing pod "+numSeq+": "+msg.toString()); }
+        });
+    }
+};
+
+var intoNumSeq = function(num, time) {
+    if (time < numSeqTimeout) {
+        numSeq += num;
+        numSeqTimeout = time + numSeqDuration;
+        return true;
+    } else {
+        return false;
+    }
+};
+
 if (devHandle) {
     numkeys.setupKeyActions(devHandle, {
-        '1': function(time, code) { radioButtonPlay('p1'); },
-        '2': function(time, code) { radioButtonPlay('p2'); },
-        '3': function(time, code) { radioButtonPlay('p3'); },
-        '4': function(time, code) { radioButtonPlay('p2m'); },
-        '0': function(time, code) { if (player) { player.quit(); } }
+        '1':  function(time, code) { if (!intoNumSeq('1', time)) { radioButtonPlay('p1'); } },
+        '2':  function(time, code) { if (!intoNumSeq('2', time)) { radioButtonPlay('p2'); } },
+        '3':  function(time, code) { if (!intoNumSeq('3', time)) { radioButtonPlay('p3'); } },
+        '4':  function(time, code) { if (!intoNumSeq('4', time)) { radioButtonPlay('p2m'); } }, 
+        '0':  function(time, code) { if (!intoNumSeq('0', time)) { if (player) { player.quit(); } } },
+        '5':  function(time, code) { intoNumSeq('5', time); },
+        '6':  function(time, code) { intoNumSeq('6', time); },
+        '7':  function(time, code) { intoNumSeq('7', time); },
+        '8':  function(time, code) { intoNumSeq('8', time); },
+        '9':  function(time, code) { intoNumSeq('9', time); },
+        '\t': function(time, code) { startNumSeq(time); },
+        '\n': function(time, code) { finishNumSeq(time); }
     });
 }
