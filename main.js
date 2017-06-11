@@ -203,6 +203,7 @@ var radioButtonPlay = function(channel) {
 
 var numSeqTimeout = 0, numSeq = "";
 var numSeqDuration = 3.0;
+var lastSkip = null, lastSkipTime = 0;
 
 var startNumSeq = function(time) {
     numSeq = "";
@@ -241,6 +242,25 @@ if (devHandle) {
         '8':  function(time, code) { intoNumSeq('8', time); },
         '9':  function(time, code) { intoNumSeq('9', time); },
         '\t': function(time, code) { startNumSeq(time); },
-        '\n': function(time, code) { finishNumSeq(time); }
+        '\n': function(time, code) { finishNumSeq(time); },
+        '.':  function(time, code) { if (player && player.toggle_pause) { player.toggle_pause(); } },
+        '+':  function(time, code) {
+            if (player && player.next_track) {
+                var rept = time;
+                if (lastSkip === '+')  { rept -= lastSkipTime; }
+                lastSkipTime = time;
+                lastSkip = '+';
+                player.next_track({ rept: rept });
+            }
+        },
+        '-':  function(time, code) {
+            if (player && player.prev_track) {
+                var rept = time;
+                if (lastSkip === '-')  { rept -= lastSkipTime; }
+                lastSkipTime = time;
+                lastSkip = '-';
+                player.prev_track({ rept: rept });
+            }
+        }
     });
 }

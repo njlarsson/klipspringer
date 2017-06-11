@@ -65,12 +65,13 @@ exports.create = function(playCwd, classPath, tracks, device) {
 
     var setPause = function(pause) {
         return function(query, callback) {
-            var toggled;
+            var target;
 	    if (!proc) {
                 if (callback) { callback("Play process not active"); }
             } else {
-	        proc.stdin.write("pause "+pause+"\n"); // toggle
-	        paused = pause;
+                target = pause === undefined ? !paused : pause;
+	        proc.stdin.write("pause "+target+"\n");
+	        paused = target;
 	        if (!paused) { for (var i = 0; i < delayedCmds.length; i += 1) { proc.stdin.write(delayedCmds[i]); } }
                 if (callback) { callback(null, { ok: true }); }
 	    }
@@ -78,7 +79,8 @@ exports.create = function(playCwd, classPath, tracks, device) {
     };
     intf.pause = setPause(true);
     intf.play = setPause(false);
-
+    intf.toggle_pause = setPause();
+    
     var skip = function(how) {
         return function(query, callback) {
             var rept = query.rept, steps;

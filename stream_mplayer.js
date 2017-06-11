@@ -4,7 +4,7 @@ var proc_util = require('./proc_util');
 var debug = require("./debug");
 
 exports.create = function(stream, device, charset) {
-    var proc = null;
+    var proc = null, paused = false;
     var quitters = 0;
 
     var options = {
@@ -75,21 +75,22 @@ exports.create = function(stream, device, charset) {
         }
     };
 
-    var togglePause = function(pause) {
+    var setPause = function(pause) {
         return function(query, callback) {
 	    if (!proc) {
                 if (callback) { callback("Play process not active", false); }
-            } else if (paused !== pause) {
+            } else if (pause === undefined || paused !== pause) {
 	        proc.stdin.write("pause\n"); // toggle
-	        paused = pause;
+	        paused = !paused;
                 if (callback) { callback(null, { ok: true }); }
 	    } else {
                 if (callback) { callback(null, { ok: true }); }
             }
         };
     };
-    intf.pause = togglePause(true);
-    intf.play = togglePause(false);
+    intf.pause = setPause(true);
+    intf.play = setPause(false);
+    intf.toggle_pause = setPause();
 
     intf.get_title = function(query, callback) {
         if      (!proc)  { callback("Play process not active"); }
