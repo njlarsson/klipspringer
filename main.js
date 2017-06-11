@@ -158,7 +158,7 @@ srv.addService('index.html', textFileService(function(path, query) {
                 var start = function() {
                     player = tracks_jplayer.create(cd, classPath, files, cardPrefix);
                     player.onExit = exitPlayer;
-                    player.start(null, function(err, effective) {
+                    player.start(null, function(err) {
                         if (err) {                               resp.passObj({ err: err.toString() }); }
                         else     { indexHtml = "cd_player.html"; resp.passObj({ ok: true }); }
                     });
