@@ -10,7 +10,7 @@ exports.create = function(playCwd, classPath, tracks, device) {
 
     var intf = {};
 
-    var args = ['-cp', classPath, '-Xmx200m', jplayer, device, '786432', '0.1'].concat(tracks);
+    var args = ['-cp', classPath, '-Xmx200m', jplayer, device, '786432', '0.2'].concat(tracks);
 
     var ansBuf = "";
     var ansCallbackQueue = [];
