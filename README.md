@@ -37,9 +37,10 @@ Try this to quick start a demo server:
     wget http://avadeaux.net/klipspringer-site.tar.gz
     tar xfz klipspringer-site.tar.gz
     cd klipspringer-site
-    git clone git@github.com:njlarsson/klipspringer.git
+    git clone https://github.com/njlarsson/klipspringer.git
     cd klipspringer
     ./compile-jplayer.sh
+    npm install ip
     node main.js .. 8080 'pulse::0' '' ../klipspringer:../jars/jflac.jar
 
 You may need to modify some of the arguments in the last command to
