@@ -16,6 +16,14 @@ var launch = function(chan) {
         else                { window.location.href = "/abs/radio_player.html"; }
     });
 };
+
+var playSrPod = function() {
+    var podid = document.getElementById("podid").value.trim();
+    loadJson("/launch?what=sr_pod&podid=" + podid, function(ans) {
+        if (ans.err) { console.error(ans.err); alert(ans.err); }
+        else         { window.location.href = "/abs/radio_player.html"; }
+    });
+};
 </script>
 
 <span class='click_choose' onclick='launch("p1")'>SR P1</span><br>
@@ -23,6 +31,8 @@ var launch = function(chan) {
 <span class='click_choose' onclick='launch("p2m")'>SR P2 musik</span><br>
 <span class='click_choose' onclick='launch("p3")'>SR P3</span><br>
 <a href='/sr_browse_pods'>Browse SR pods</a><br>
+<span class='click_choose' onclick='playSrPod()'>Play SR pod:</span> <input type="text" id="podid"><br>
 <a href='/cd_browse'>Browse cd database</a>
+
 </body>
 </html>
