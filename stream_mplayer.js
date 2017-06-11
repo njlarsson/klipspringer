@@ -23,7 +23,7 @@ exports.create = function(stream, device) {
     for (opt in options) { args = args.concat(options[opt]); }
     args = args.concat(stream);
 
-    var title = "";
+    var title = null;
 
     intf.start = function(query, callback) {
         var textbuf = '', endLine, icy;
@@ -43,8 +43,7 @@ exports.create = function(stream, device) {
                 }
             });
             proc.stderr.on('data', function(buf) { debug(buf.toString(), 2); });
-            
-            var exit = function (code) {
+            proc.on('exit', function (code) {
                 if (proc) {
                     proc = null;
                     debug("mplayer terminated, status: " + code, 1);
@@ -53,13 +52,11 @@ exports.create = function(stream, device) {
                         debug("quitters: " + quitters);
                         quitters = 0;
                     } else {
-                        debug("spontaneous quit, restart");
-                        intf.start(callback);
+                        debug("spontaneous quit");
+                        // intf.start(callback);
                     }
                 }
-            };
-            proc.on('exit', exit);
-            proc.on('close', exit);
+            });
             if (callback) { callback(); }
         }
     };
@@ -77,11 +74,26 @@ exports.create = function(stream, device) {
         }
     };
 
+    var togglePause = function(pause) {
+        return function(query, callback) {
+	    if (!proc) {
+                if (callback) { callback("Play process not active", false); }
+            } else if (paused !== pause) {
+	        proc.stdin.write("pause\n"); // toggle
+	        paused = pause;
+                if (callback) { callback(null, { ok: true }); }
+	    } else {
+                if (callback) { callback(null, { ok: true }); }
+            }
+        };
+    };
+    intf.pause = togglePause(true);
+    intf.play = togglePause(false);
+
     intf.get_title = function(query, callback) {
-        console.log("getting "+title);
-        if      (!proc)        { callback("Play process not active"); }
-        else if (title === '') { callback("Title not set"); }
-        else                   { callback(null, { title: title }); }
+        if      (!proc)  { callback("Play process not active"); }
+        else if (!title) { callback("Title not set"); }
+        else             { callback(null, { title: title }); }
     };
     
     return intf;

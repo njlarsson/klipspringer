@@ -59,7 +59,7 @@ var playStream = function(channel, notice) {
         var start = function() {
             player = stream_mplayer.create(stream, device);
             player.onExit = exitPlayer;
-            player.start(null, function(err, effective) {
+            player.start(null, function(err) {
                 if (err) { notice.error(err); }
                 else     { notice.ok(); }
             });
@@ -69,6 +69,20 @@ var playStream = function(channel, notice) {
     } else {
         notice.err("Channel unavailable: " + query.channel);
     }
+};
+
+var playPod = function(podid, notice) {
+    var stream = "http://sverigesradio.se/topsy/senastepodd/"+podid+".mp3";
+    var start = function() {
+        player = stream_mplayer.create(stream, device);
+        player.onExit = exitPlayer;
+        player.start(null, function(err) {
+            if (err) { notice.error(err); }
+            else     { notice.ok(); }
+        });
+    };
+    if (player) { player.onExit = start; player.quit(); }
+    else        { start(); }
 };
 
 var srv = http_server.create();
@@ -112,6 +126,11 @@ srv.addService('index.html', textFileService(function(path, query) {
         });
     } else if (query.what == 'sr') {
         playStream(query.channel, {
+            ok:    function() { indexHtml = "radio_player.html"; resp.passObj({ ok: true }); },
+            error: function(msg) { resp.passObj({ err: msg.toString() }); }
+        });
+    } else if (query.what == 'sr_pod') {
+        playPod(query.podid, {
             ok:    function() { indexHtml = "radio_player.html"; resp.passObj({ ok: true }); },
             error: function(msg) { resp.passObj({ err: msg.toString() }); }
         });
