@@ -250,7 +250,7 @@ if (devHandle) {
                 if (lastSkip === '+')  { rept -= lastSkipTime; }
                 lastSkipTime = time;
                 lastSkip = '+';
-                player.next_track({ rept: rept });
+                player.next_track({ rept: Math.round(rept*1000) });
             }
         },
         '-':  function(time, code) {
@@ -259,7 +259,7 @@ if (devHandle) {
                 if (lastSkip === '-')  { rept -= lastSkipTime; }
                 lastSkipTime = time;
                 lastSkip = '-';
-                player.prev_track({ rept: rept });
+                player.prev_track({ rept: Math.round(rept*1000) });
             }
         }
     });

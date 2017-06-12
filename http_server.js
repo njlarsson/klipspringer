@@ -35,7 +35,7 @@ exports.create = function() {
         };
         resp.expectsBody = function() { return req.method == 'GET'; }
 
-	debug("url: " + req.url, 2);
+	debug("url: " + req.url, 3);
         var parsedUrl = url.parse(req.url, true);
         var service = services[parsedUrl.pathname.match(/^\/([^\/]+)?/)[1] || 'index.html'];
         if (service) { service(parsedUrl.pathname, parsedUrl.query, resp); }

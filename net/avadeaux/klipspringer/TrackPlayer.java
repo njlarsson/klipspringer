@@ -18,7 +18,7 @@ import java.util.*;
 public class TrackPlayer {
     private final ChainPlayer chains = new ChainPlayer();
     private final ArrayList<String> fnams = new ArrayList<String>();
-    private int decodingTrackNo = 0, playingTrackNo = 0;
+    private int decodingTrackNo = 0, playingTrackNo = 0, playingPlus = 0;
     private boolean playIdle = false, stopped = false;
     private long endMillis = System.currentTimeMillis();
 
@@ -26,6 +26,7 @@ public class TrackPlayer {
             public void playingNext() {
                 synchronized (TrackPlayer.this) {
                     ++playingTrackNo;
+                    playingPlus = 0; // playingTrackNo is now the logical playing track
                     TrackPlayer.this.notifyAll();
                 }
             }
@@ -43,16 +44,16 @@ public class TrackPlayer {
     synchronized String fnam(int trackNo) { return trackNo > 0 && trackNo <= fnams.size() ? fnams.get(trackNo-1) : null; }
     synchronized void addFnam(String fnam) { fnams.add(fnam); notifyAll(); }
     synchronized String playingTrackName() {
-        if (playingTrackNo < 1) {
+        if (playingTrackNo+playingPlus < 1) {
             // Don't have a track yet, be a little patient.
             long timeout = System.currentTimeMillis()+2000;
             do {
                 long remain = timeout - System.currentTimeMillis();
                 if (remain < 1) { break; }
                 try { wait(remain); } catch (InterruptedException e) { }
-            } while (playingTrackNo < 1);
+            } while (playingTrackNo+playingPlus < 1);
         }
-        return fnam(playingTrackNo);
+        return fnam(playingTrackNo+playingPlus);
     }
     synchronized double trackRemainEst() { return Math.max(endMillis-System.currentTimeMillis(), 0)/1000.0; }
     void quit() {
@@ -63,8 +64,9 @@ public class TrackPlayer {
     }
     void skip(int offset) {
         synchronized (this) {
-            if (playingTrackNo == fnams.size() && offset > 0) { return; } // ignore forward from last
-            playingTrackNo = decodingTrackNo = Math.max(0, Math.min(fnams.size()-1, playingTrackNo-1+offset));
+            if (playingTrackNo+playingPlus == fnams.size() && offset > 0) { return; } // ignore forward from last
+            playingTrackNo = decodingTrackNo = Math.max(0, Math.min(fnams.size()-1, playingTrackNo+playingPlus-1+offset));
+            playingPlus = 1;    // logical current track is one ahead of playingTrackNo
         }
         stop();
     }
