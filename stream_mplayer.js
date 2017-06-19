@@ -11,7 +11,9 @@ exports.create = function(stream, device, charset, allowSeek) {
 	quiet: [ "-quiet" ],
 	slave: [ "-slave" ],
         ao: [ "-ao", device ],
-        volume: [ "-volume", "100" ]
+	ac: [ "-ac", "mad" ],
+        volume: [ "-volume", "100" ],
+	ip: [ "-prefer-ipv4" ]
         // cache: [ "-cache", "2048" ],
         // cache_min: [ "-cache-min", "5" ]
     };
@@ -107,7 +109,6 @@ exports.create = function(stream, device, charset, allowSeek) {
                 } else {
                     secs = how * (rept < 1000 ? 300 : 30);
 	            proc.stdin.write("seek "+secs+"\n"); // toggle
-                    console.log(""+secs);
                     if (callback) { callback(null, { ok: true }); }
                 }
             };
