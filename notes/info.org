@@ -150,6 +150,7 @@ To add a sink for tunneling on delia, do this in pacmd:
 
 load-module module-tunnel-sink sink_name=kliptun server=tcp:192.168.1.5:4713 
 
+Permanently: add that line to /etc/pulse/default.pa
 
 * Wake up Klipspringer
 
