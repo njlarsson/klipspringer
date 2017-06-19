@@ -93,8 +93,8 @@ exports.create = function(playCwd, classPath, tracks, device) {
             }
         };
     };
-    intf.next_track = skip(1);
-    intf.prev_track = skip(-1);
+    intf.next = skip(1);
+    intf.prev = skip(-1);
 
     var ansHandler = function(callback) {
         return function(ansString) {

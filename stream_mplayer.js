@@ -3,7 +3,7 @@ var fs = require('fs');
 var proc_util = require('./proc_util');
 var debug = require("./debug");
 
-exports.create = function(stream, device, charset) {
+exports.create = function(stream, device, charset, allowSeek) {
     var proc = null, paused = false;
     var quitters = 0;
 
@@ -97,6 +97,24 @@ exports.create = function(stream, device, charset) {
         else if (!title) { callback("Title not set"); }
         else             { callback(null, { title: title }); }
     };
+
+    if (allowSeek) {
+        var seek = function(how) {
+            return function(query, callback) {
+                var rept = query.rept, secs;
+	        if (!proc) {
+                    if (callback) { callback("Play process not active"); }
+                } else {
+                    secs = how * (rept < 1000 ? 300 : 30);
+	            proc.stdin.write("seek "+secs+"\n"); // toggle
+                    console.log(""+secs);
+                    if (callback) { callback(null, { ok: true }); }
+                }
+            };
+        };
+        intf.next = seek(1);
+        intf.prev = seek(-1);
+    }
     
     return intf;
 }

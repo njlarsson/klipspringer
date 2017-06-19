@@ -21,7 +21,7 @@ var playSrPod = function() {
     var podid = document.getElementById("podid").value.trim();
     loadJson("/launch?what=sr_pod&podid=" + podid, function(ans) {
         if (ans.err) { console.error(ans.err); alert(ans.err); }
-        else         { window.location.href = "/abs/radio_player.html"; }
+        else         { window.location.href = "/abs/pod_player.html"; }
     });
 };
 </script>

@@ -58,7 +58,7 @@ var playStream = function(channel, notice) {
     else                       { stream = null; }
     if (stream) {
         var start = function() {
-            player = stream_mplayer.create(stream, device, 'utf8');
+            player = stream_mplayer.create(stream, device, 'utf8', false);
             player.onExit = exitPlayer;
             player.start(null, function(err) {
                 if (err) { notice.error(err); }
@@ -75,7 +75,7 @@ var playStream = function(channel, notice) {
 var playPod = function(podid, notice) {
     var stream = "http://sverigesradio.se/topsy/senastepodd/"+podid+".mp3";
     var start = function() {
-        player = stream_mplayer.create(stream, device, 'latin1');
+        player = stream_mplayer.create(stream, device, 'latin1', true);
         player.onExit = exitPlayer;
         player.start(null, function(err) {
             if (err) { notice.error(err); }
@@ -174,7 +174,7 @@ srv.addService('index.html', textFileService(function(path, query) {
         });
     } else if (query.what == 'sr_pod') {
         playPod(query.podid, {
-            ok:    function() { indexHtml = "radio_player.html"; resp.passObj({ ok: true }); },
+            ok:    function() { indexHtml = "pod_player.html"; resp.passObj({ ok: true }); },
             error: function(msg) { resp.passObj({ err: msg.toString() }); }
         });
     } else {
@@ -213,7 +213,7 @@ var startNumSeq = function(time) {
 var finishNumSeq = function(time) {
     if (time < numSeqTimeout) {
         playPod(numSeq, {
-            ok:    function()    { indexHtml = "radio_player.html"; debug("Playing pod "+numSeq, 1); },
+            ok:    function()    { indexHtml = "pod_player.html"; debug("Playing pod "+numSeq, 1); },
             error: function(msg) { debug("Error playing pod "+numSeq+": "+msg.toString()); }
         });
     }
@@ -245,21 +245,21 @@ if (devHandle) {
         '\n': function(time, code) { finishNumSeq(time); },
         '.':  function(time, code) { if (player && player.toggle_pause) { player.toggle_pause(); } },
         '+':  function(time, code) {
-            if (player && player.next_track) {
+            if (player && player.next) {
                 var rept = time;
                 if (lastSkip === '+')  { rept -= lastSkipTime; }
                 lastSkipTime = time;
                 lastSkip = '+';
-                player.next_track({ rept: Math.round(rept*1000) });
+                player.next({ rept: Math.round(rept*1000) });
             }
         },
         '-':  function(time, code) {
-            if (player && player.prev_track) {
+            if (player && player.prev) {
                 var rept = time;
                 if (lastSkip === '-')  { rept -= lastSkipTime; }
                 lastSkipTime = time;
                 lastSkip = '-';
-                player.prev_track({ rept: Math.round(rept*1000) });
+                player.prev({ rept: Math.round(rept*1000) });
             }
         }
     });

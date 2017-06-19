@@ -44,14 +44,13 @@ var getTrackSoon = function() {
 
 </script>
 
-<button onmousedown="sendCmd('prev_track');getTrackSoon()">|&lt;</button>
-<button onmousedown="sendCmd('next_track');getTrackSoon()">&gt;|</button>
-<br />
+<button onmousedown="sendCmd('prev');getTrackSoon()">|&lt;</button>
+<button onmousedown="sendCmd('next');getTrackSoon()">&gt;|</button>
+<br>
 <button onmousedown="sendCmd('quit');setTrack('Stopped')">&#x2588;</button>
 <button onmousedown="sendCmd('pause')">||</button>
 <button onmousedown="sendCmd('play')">&gt;</button>
-<br />
-
+<br>
 <a href="/abs/sources.html"><button>&#x2302;</button></a>
 
 <div id="track"><p>Wait…</p></div>
