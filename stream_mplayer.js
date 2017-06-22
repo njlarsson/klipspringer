@@ -3,20 +3,23 @@ var fs = require('fs');
 var proc_util = require('./proc_util');
 var debug = require("./debug");
 
-exports.create = function(stream, device, charset, allowSeek) {
+exports.create = function(stream, device, charset, allowSeek, optionsOverride) {
     var proc = null, paused = false;
     var quitters = 0;
+    var opt;
 
     var options = {
 	quiet: [ "-quiet" ],
 	slave: [ "-slave" ],
         ao: [ "-ao", device ],
-	ac: [ "-ac", "mad" ],
         volume: [ "-volume", "100" ],
 	ip: [ "-prefer-ipv4" ]
         // cache: [ "-cache", "2048" ],
         // cache_min: [ "-cache-min", "5" ]
     };
+    if (optionsOverride) {
+        for (opt in optionsOverride) { options[opt] = optionsOverride[opt]; }
+    }
     var mplayer = "mplayer";
 
     var intf = {};

@@ -58,7 +58,7 @@ var playStream = function(channel, notice) {
     else                       { stream = null; }
     if (stream) {
         var start = function() {
-            player = stream_mplayer.create(stream, device, 'utf8', false);
+            player = stream_mplayer.create(stream, device, 'utf8');
             player.onExit = exitPlayer;
             player.start(null, function(err) {
                 if (err) { notice.error(err); }
@@ -75,7 +75,7 @@ var playStream = function(channel, notice) {
 var playPod = function(podid, notice) {
     var stream = "http://sverigesradio.se/topsy/senastepodd/"+podid+".mp3";
     var start = function() {
-        player = stream_mplayer.create(stream, device, 'latin1', true);
+        player = stream_mplayer.create(stream, device, 'latin1', true, { ac: [ "-ac", "mad" ] });
         player.onExit = exitPlayer;
         player.start(null, function(err) {
             if (err) { notice.error(err); }
