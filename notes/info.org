@@ -218,3 +218,14 @@ Put in /etc/network/if-pre-up.d/iptables:
 /sbin/iptables-restore < /etc/iptables.up.rules
 
 (and make executable)
+
+* Java sound issue
+
+When configuring a new NUC to use as klipspringer hub, the sound wouldn't work
+in Java. The list of available mixers was empty. It seems like openjdk's
+pulseaudio support, which is supposed to be provided by IcedTea, stopped
+working. My solution was to replace openjdk with Oracle jdk (in
+/usr/local). Oracle Java does not support pulseaudio (IcedTea is GPL), and
+therefore uses Alsa, which seems to work. This is just as well, because who
+knows what the pulseaudio layer does, it might affect the sound. Better to go
+directly on alsa.
