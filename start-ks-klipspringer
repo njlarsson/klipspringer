@@ -6,4 +6,4 @@ echo starting ks >> ~/.kliplog
 date >> ~/.kliplog
 cd /home/klipspringer/klipspringer
 #node ks.js /mnt/klipspringer 8080 'alsa:device=hw=1,0' >> ~/.kliplog 2>&1 &
-/usr/local/bin/node main.js /media/klipspringer/porsche 8080 'pulse::0' DAC /home/klipspringer/klipspringer:/home/klipspringer/jars/jflac.jar >> ~/.kliplog 2>&1 &
+/usr/local/bin/node main.js /media/klipspringer/porsche 8080 'alsa:device=plughw=1,0' DAC /home/klipspringer/klipspringer:/home/klipspringer/jars/jflac.jar >> ~/.kliplog 2>&1 &
