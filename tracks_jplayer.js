@@ -19,7 +19,7 @@ exports.create = function(playCwd, classPath, tracks, device) {
         if (proc) {
             if (callback) { callback("Already started"); }
         } else {
-            proc = child_process.spawn('java', args, { cwd: playCwd });
+            proc = child_process.spawn('/usr/local/bin/java', args, { cwd: playCwd });
             proc.stdout.on('data', function(buf) {
                 ansBuf += buf.toString();
                 var endAns = ansBuf.indexOf('\n\n');
