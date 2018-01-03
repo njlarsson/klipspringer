@@ -219,6 +219,13 @@ Put in /etc/network/if-pre-up.d/iptables:
 
 (and make executable)
 
+* Start on reboot
+
+crontab -e
+
+Add:
+@reboot /home/klipspringer/bin/start-ks
+
 * Java sound issue
 
 When configuring a new NUC to use as klipspringer hub, the sound wouldn't work
