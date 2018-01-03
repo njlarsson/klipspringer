@@ -70,12 +70,13 @@ class TrackChain {
             int lineBufSz = (int) secsToBytes(lineBufSecs);
             line = null;
             for (int tries = 0; line == null && tries < 2; tries++) {
+                System.err.println("Want "+ format);
                 try {
                     line = (SourceDataLine) AudioSystem.getMixer(mixerInfo).
                         getLine(new DataLine.Info(SourceDataLine.class, format, lineBufSz));
                 } catch (IllegalArgumentException ex) {
                     System.err.println("Try "+(tries+1)+": "+ex);
-                    Thread.sleep(1000);
+                    try { Thread.sleep(5000); } catch (InterruptedException ey) { }
                 }
             }
             line.open(format, lineBufSz);
