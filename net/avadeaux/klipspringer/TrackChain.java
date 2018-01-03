@@ -75,6 +75,7 @@ class TrackChain {
                         getLine(new DataLine.Info(SourceDataLine.class, format, lineBufSz));
                 } catch (IllegalArgumentException ex) {
                     System.err.println("Try "+(tries+1)+": "+ex);
+                    Thread.sleep(1000);
                 }
             }
             line.open(format, lineBufSz);
