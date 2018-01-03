@@ -39,7 +39,7 @@ exports.create = function(playCwd, classPath, tracks, device) {
                     if (intf.onExit) {
                         if (code) {
                             intf.onExit("exit status: " + code);
-                            if (code == 441 && depth == 0) {
+                            if (code == 44 && depth == 0) {
                                 // kludge to try again if java fails to get channel for unknown reason
                                 start2(query, callback, 1);
                             }

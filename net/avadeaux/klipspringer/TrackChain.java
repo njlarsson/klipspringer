@@ -72,7 +72,8 @@ class TrackChain {
                 line = (SourceDataLine) AudioSystem.getMixer(mixerInfo).
                     getLine(new DataLine.Info(SourceDataLine.class, format, lineBufSz));
             } catch (IllegalArgumentException ex) {
-                System.exit(441); // magic value to trigger retry
+                
+                System.exit(44); // magic value to trigger retry
             }
             line.open(format, lineBufSz);
             line.start();
