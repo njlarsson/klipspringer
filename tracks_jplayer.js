@@ -15,12 +15,10 @@ exports.create = function(playCwd, classPath, tracks, device) {
     var ansBuf = "";
     var ansCallbackQueue = [];
 
-    var start2 = function(query, callback, depth) {
+    intf.start = function(query, callback) {
         if (proc) {
             if (callback) { callback("Already started"); }
         } else {
-            debug(JSON.stringify(args, null, 2), 1);
-            debug(JSON.stringify(playCwd, null, 2), 1);
             proc = child_process.spawn('/usr/local/bin/java', args, { cwd: playCwd });
             proc.stdout.on('data', function(buf) {
                 ansBuf += buf.toString();
@@ -39,13 +37,7 @@ exports.create = function(playCwd, classPath, tracks, device) {
                     proc = null;
                     debug("track player terminated, status: " + code, 1);
                     if (intf.onExit) {
-                        if (code) {
-                            intf.onExit("exit status: " + code);
-                            if (code == 44 && depth < 10) {
-                                // kludge to try again if java fails to get channel for unknown reason
-                                start2(query, callback, depth+1);
-                            }
-                        }
+                        if (code) { intf.onExit("exit status: " + code); }
                         else      { intf.onExit(null, { ok: true }); }
                     }
                 }
@@ -53,8 +45,6 @@ exports.create = function(playCwd, classPath, tracks, device) {
             if (callback) { callback(null, { ok: true }); }
         }
     };
-
-    intf.start = function(query, callback) { start2(query, callback, 0); }
     
     var command = function(cmd) {
 	if (paused) { delayedCmds.push(cmd); }

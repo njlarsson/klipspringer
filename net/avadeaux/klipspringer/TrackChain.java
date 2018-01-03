@@ -68,13 +68,8 @@ class TrackChain {
         }
         try {
             int lineBufSz = (int) secsToBytes(lineBufSecs);
-            try {
-                line = (SourceDataLine) AudioSystem.getMixer(mixerInfo).
-                    getLine(new DataLine.Info(SourceDataLine.class, format, lineBufSz));
-            } catch (IllegalArgumentException ex) {
-                ex.printStackTrace(System.err);
-                System.exit(44); // magic value to trigger retry
-            }
+            line = (SourceDataLine) AudioSystem.getMixer(mixerInfo).
+                getLine(new DataLine.Info(SourceDataLine.class, format, lineBufSz));
             line.open(format, lineBufSz);
             line.start();
         } catch (LineUnavailableException ex) { lineUnavailable(ex); }            
