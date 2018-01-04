@@ -34,8 +34,8 @@ class TrackChain {
         TrackChain.class.notifyAll();
     }
     
-    private static void lineUnavailable(LineUnavailableException ex) {
-        System.err.println("Line unavailable");
+    private static void lineMixerProblem(Exception ex) {
+        System.err.println("Error getting mixer or line");
         ex.printStackTrace();
         System.exit(1);
     }
@@ -72,7 +72,10 @@ class TrackChain {
                 getLine(new DataLine.Info(SourceDataLine.class, format, lineBufSz));
             line.open(format, lineBufSz);
             line.start();
-        } catch (LineUnavailableException ex) { lineUnavailable(ex); }            
+        }
+        catch (LineUnavailableException ex) { lineMixerProblem(ex); }
+        catch (IllegalArgumentException ex) { lineMixerProblem(ex); }
+        
     }
     
     boolean formatMatches(AudioFormat fmt) {
