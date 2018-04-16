@@ -27,14 +27,16 @@ loadJson("/list_pods", function(ans) {
         rsltElt.innerHTML = "";
         for (var i = 0; i < ans.dir.length; i += 1) {
             var x = ans.dir[i];
-            var choose = document.createElement('span');
-            choose.setAttribute('onclick', "launch('" + x.podid + "')");
-            choose.setAttribute('class', "click_choose");
-            var name = document.createElement('span');
-            name.innerHTML = x.name+" ("+x.podid+")";
-            choose.appendChild(name);
-            choose.appendChild(document.createElement('br'));
-            rsltElt.appendChild(choose);
+            if (x.podid) {
+                var choose = document.createElement('span');
+                choose.setAttribute('onclick', "launch('" + x.podid + "')");
+                choose.setAttribute('class', "click_choose");
+                var name = document.createElement('span');
+                name.innerHTML = x.name+" ("+x.podid+")";
+                choose.appendChild(name);
+                choose.appendChild(document.createElement('br'));
+                rsltElt.appendChild(choose);
+            }
         }
     }
 });

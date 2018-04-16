@@ -73,7 +73,7 @@ var playStream = function(channel, notice) {
 };
 
 var playPod = function(podid, notice) {
-    var stream = "http://sverigesradio.se/topsy/senastepodd/"+podid+".mp3";
+    var stream = "http://sverigesradio.se/topsy/ljudfil/srse/"+podid+".mp3";
     var start = function() {
         player = stream_mplayer.create(stream, device, 'latin1', true, { ac: [ "-ac", "mad" ] });
         player.onExit = exitPlayer;
@@ -102,7 +102,7 @@ var expandPodlist = function(dir, callback) {
         httpGet('sverigesradio.se', dir[i].home, i, function(err, body, j) {
             if (err) { dir[j].err = err.toString(); }
             else {
-                var m = body.match(/href="http:\/\/api.sr.se\/api\/rss\/pod\/([0-9]+)"/);
+                var m = body.match(/href="\/\/sverigesradio\.se\/topsy\/ljudfil\/srse\/([0-9]+)\.mp3"/);
                 if (m) { dir[j].podid = m[1]; }
             }
             if (--remain === 0) { callback({ dir: dir }); }
