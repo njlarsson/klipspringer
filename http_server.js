@@ -29,6 +29,19 @@ exports.create = function() {
                 resp.end();
             }
         };
+        resp.passImage = function(type, readStream) {
+            resp.writeHead(200, { 'Content-Type': "image/" + type });
+            if (resp.expectsBody()) {
+                if (typeof readStream == 'function') { readStream = readStream(); }
+                readStream.on('data', function(chunk) {  
+                    resp.write(chunk, 'binary');
+                }).on('end', function() {
+                    resp.end(null, 'binary');
+                });                
+            } else {
+                resp.end();
+            }
+        };
         resp.notFound = function(message) {
             resp.writeHead(404, { 'Content-Type': "text/plain" });
             resp.end(message || "Not found/applicable." );

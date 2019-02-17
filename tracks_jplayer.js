@@ -1,5 +1,4 @@
 var child_process = require('child_process');
-var fs = require('fs');
 var proc_util = require('./proc_util');
 var debug = require("./debug");
 

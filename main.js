@@ -145,6 +145,23 @@ srv.addService('index.html', textFileService(function(path, query) {
             else     { extractPodlist(body, callback); }
         });
     });
+}).addService('img', function(path, query, resp) {
+    var agent = decodeURI(query.agent);
+    if (agent.indexOf('/') >= 0) { resp.notFound("Not an agent name: " + agent); }
+    var album = decodeURI(query.album);
+    if (album.indexOf('/') >= 0) { resp.notFound("Not an album name: " + album); }
+    var file = decodeURI(query.file);
+    if (file.indexOf('/') >= 0) { resp.notFound("Not a plain file name: " + file); }
+    var path = cd+'/'+agent+'/'+album+'/data/'+file;
+    var type = file.substring(file.lastIndexOf(".") + 1).toLowerCase();
+    if      (type == 'jpeg') { }
+    else if (type == 'jpg')  { type = 'jpeg'; }
+    else if (type == 'gif')  { }
+    else if (type == 'png')  { }
+    else                     { resp.notFound("Unknown file type: " + type); }
+    resp.passImage(type, function() {
+        return fs.createReadStream(path);
+    });
 }).addService('launch', function(path, query, resp) {
     if (query.what == 'cd') {
         var albumDir = decodeURI(query.agent)+'/'+decodeURIComponent(query.album);
