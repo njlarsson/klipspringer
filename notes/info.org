@@ -64,6 +64,8 @@ Choose: -sid <ID> (also see -slang, -vobsubid)
 
 * Power button
 
+** Old, does it still work?
+
 1.- sudo gedit /etc/acpi/events/powerbtn
 
 2.- Add # to comment line: #action=/etc/acpi/powerbtn.sh
@@ -73,6 +75,11 @@ Choose: -sid <ID> (also see -slang, -vobsubid)
 4.- Save file
 
 5.- Open a console and type: sudo acpid restart
+
+** Did in Ubuntu 18.04
+
+sudo hostnamectl set-chassis vm
+sudo gsettings set org.gnome.settings-daemon.plugins.power button-power shutdown
 
 * NFS
 
