@@ -45,9 +45,15 @@ var getTrackSoon = function() {
 var getImages = function() {
     sendCmd("get_img_fnams", function(ans) {
         if (ans.imgs) {
-            var i;
-            for (i = 0; i < ans.imgs.length; i += 1) {
-                document.write("<img src='/img?agent="+ans.agent+"&album="+ans.album+"&file="+ans.imgs[i]+"' alt=''>");
+            var imgsElt = document.getElementById("images");
+            for (var i = 0; i < ans.imgs.length; i += 1) {
+                var img = document.createElement('img');
+                img.setAttribute('src',
+                                 "/img?agent="+encodeURIComponent(ans.agent)+
+                                 "&album="+encodeURIComponent(ans.album)+
+                                 "&file="+encodeURIComponent(ans.imgs[i]));
+                img.setAttribute('alt', "");
+                imgsElt.appendChild(img);
             }
         } else {
             console.error(ans.err);
@@ -67,6 +73,7 @@ var getImages = function() {
 <a href="/abs/sources.html"><button>&#x2302;</button></a>
 
 <div id="track"><p>Wait…</p></div>
+<div id="images"></div>
 
 <script>
 vis(getTrack)
