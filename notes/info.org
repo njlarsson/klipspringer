@@ -89,7 +89,11 @@ sudo apt-get install nfs-kernel-server
 
 In /etc/exports:
 /media/klipspringer/porsche *(rw,sync,no_root_squash)
+
 sudo service nfs-kernel-server start
+
+Behövs också?:
+sudo update-rc.d nfs-kernel-server enable
 
 ** Client
 
