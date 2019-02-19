@@ -42,6 +42,19 @@ var getTrackSoon = function() {
     trackTimer = setTimeout(getTrack, 100);
 };
 
+var getImages = function() {
+    sendCmd("get_img_fnams", function(ans) {
+        if (ans.imgs) {
+            var i;
+            for (i = 0; i < ans.imgs.length; i += 1) {
+                document.write("<img src='/img?agent="+ans.agent+"&album="+ans.album+"&file="+ans.imgs[i]+"' alt=''>");
+            }
+        } else {
+            console.error(ans.err);
+        }
+    });
+};
+
 </script>
 
 <button onmousedown="sendCmd('prev');getTrackSoon()">|&lt;</button>
@@ -58,7 +71,7 @@ var getTrackSoon = function() {
 <script>
 vis(getTrack)
 getTrack();
+getImages();
 </script>
-
 </body>
 </html>

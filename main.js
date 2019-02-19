@@ -175,6 +175,16 @@ srv.addService('index.html', textFileService(function(path, query) {
                 var start = function() {
                     player = tracks_jplayer.create(cd, classPath, files, cardPrefix);
                     player.onExit = exitPlayer;
+                    player.get_img_fnams = function(q2, callback) {
+                        fs.readdir(cd+'/'+albumDir+'/data', function(derr, dfiles) {
+                            if (derr) {
+                                resp.passObj({ err: derr.toString() });
+                            } else {
+                                dfiles = dfiles.filter(function(dfnam) { return /\.(jpeg|jpg|gif|png)$/i.test(dfnam); });
+                                callback(null, { imgs: dfiles, agent: query.agent, album: query.album });
+                            }
+                        });
+                    }
                     player.start(null, function(err) {
                         if (err) {                               resp.passObj({ err: err.toString() }); }
                         else     { indexHtml = "cd_player.html"; resp.passObj({ ok: true }); }
