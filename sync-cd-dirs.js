@@ -39,8 +39,8 @@ var cmpTitle = function(d0, d1, script) {
         f0 = files0[i];
         f1 = files1[i];
         if (!f0 && !f1) { break; }
-        else if (!f0) { script.push("rm '"+d1+"/"+f1+"'"); }
-        else if (!f1) { script.push("cp '"+d0+"/"+f0+"' '"+d1+"'"); }
+        else if (!f0) { script.push("rm -r '"+d1+"/"+f1+"'"); }
+        else if (!f1) { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); }
         else if (sametrack(f0, f1)) {
             s0 = fs.lstatSync(d0+"/"+f0);
             s1 = fs.lstatSync(d1+"/"+f1);
