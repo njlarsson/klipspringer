@@ -6,4 +6,3 @@ echo starting ks >> ~/.kliplog
 date >> ~/.kliplog
 cd /home/pi/klipspringer
 /usr/bin/node main.js /mnt/klipspringer 8080 'alsa:device=hw=1,0' 'sndrpihifiberry' /home/pi/klipspringer:/home/pi/jars/jflac.jar >> ~/.kliplog 2>&1 &
-
