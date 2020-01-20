@@ -2,6 +2,7 @@
 
 # Server start script tailored for personal use, don't expect explanation.
 
+touch ~/.kliplog
 echo starting ks >> ~/.kliplog
 date >> ~/.kliplog
 cd /home/pi/klipspringer
