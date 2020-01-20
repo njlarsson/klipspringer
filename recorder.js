@@ -4,10 +4,14 @@ var numkeys = require('./numkeys');
 
 var fno = 0;
 
+var speak = function(s) {
+    return child_process.spawn('/usr/bin/espeak', [s]);
+}
+
 var setFnoFun = function(i, ch) {
     return function() {
         fno = i;
-        child_process.spawn('/usr/bin/espeak', [ch]);
+        speak(ch);
     }
 }
 
@@ -24,7 +28,7 @@ var rec = null, play = null;
 }());
 
 actions['+'] = function() {
-    child_process.spawn('/usr/bin/espeak', ["re-cord"]);
+    speak("re-cord");
     if (rec) { rec.kill(); }
     rec = child_process.spawn(
         '/usr/bin/rec',
@@ -38,19 +42,19 @@ actions['+'] = function() {
     
 actions['-'] = function() {
     if (!rec) { return; }
-    child_process.spawn('/usr/bin/espeak', ["stop"]);
+    speak("stop");
     rec.kill();
     rec = null;
 }
 
 actions['\b'] = function() {
-    child_process.spawn('/usr/bin/espeak', ["delete"]);
+    speak("delete");
     fs.unlink('rec'+fno+'.wav', function() {});
 }
 
 actions['*'] = function() {
     if (play) { play.kill(); }
-    child_process.spawn('/usr/bin/espeak', ["play"])
+    speak("play")
         .on('exit', function() {
             play = child_process.spawn('/usr/bin/play', ['rec'+fno+'.wav']);
         });
@@ -64,7 +68,7 @@ actions['/'] = function() {
 
 actions['.'] = function() {
     var durs = '', a, t = "", h, m, s;
-    child_process.spawn('/usr/bin/soxi', ['-d', 'rec'+fno+'.wav']);
+    child_process.spawn('/usr/bin/soxi', ['-d', 'rec'+fno+'.wav'])
         .on('exit', function() {
             a = durs.match(/(\d\d):(\d\d):(\d\d\.\d\d)/);
             if (!a) { t = "can't get duration"; }
@@ -74,10 +78,8 @@ actions['.'] = function() {
                 if (t || m) { t += m + (m > 1 ? " minutes, " : " minute, "); }
                 t += s + " seconds";
             }
-        console.log(t);
-        })
-    .stdout.on('data', function(buf) { durs += buf.toString(); });
-    child_process.spawn('/usr/bin/espeak', [t]);
+            speak(t);
+        }).stdout.on('data', function(buf) { durs += buf.toString(); });
 }
 
 var devHandle = process.argv[2]; // Something like /dev/input/event0
