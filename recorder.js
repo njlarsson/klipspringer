@@ -4,6 +4,10 @@ var numkeys = require('./numkeys');
 
 var fno = 0;
 
+var fnam = function(i) {
+    return '/home/pi/recs/rec'+i+'.wav';
+}
+    
 var speak = function(s) {
     return child_process.spawn('/usr/bin/espeak', [s]);
 }
@@ -27,9 +31,12 @@ var rec = null, play = null;
     }
 }());
 
-actions['+'] = function() {
-    speak("re-cord");
-    if (rec) { rec.kill(); }
+actions['\t'] = function() {
+    fno = (fno + 1) % 10;
+    speak(fno);
+}
+
+var startrec = function() {
     rec = child_process.spawn(
         '/usr/bin/rec',
         ['-c', '2',
@@ -37,7 +44,13 @@ actions['+'] = function() {
          '-b', '24',
          '--buffer', '65536',
          '-q',
-         'rec'+fno+'.wav']);
+         fnam(fno)]);
+}
+
+actions['+'] = function() {
+    if (rec) rec.kill();
+    startrec();
+    speak("re-cording");
 }
     
 actions['-'] = function() {
@@ -49,14 +62,14 @@ actions['-'] = function() {
 
 actions['\b'] = function() {
     speak("delete");
-    fs.unlink('rec'+fno+'.wav', function() {});
+    fs.unlink(fnam(fno), function() {});
 }
 
 actions['*'] = function() {
     if (play) { play.kill(); }
     speak("play")
         .on('exit', function() {
-            play = child_process.spawn('/usr/bin/play', ['rec'+fno+'.wav']);
+            play = child_process.spawn('/usr/bin/play', [fnam(fno)]);
         });
 }
 
@@ -68,7 +81,7 @@ actions['/'] = function() {
 
 actions['.'] = function() {
     var durs = '', a, t = "", h, m, s;
-    child_process.spawn('/usr/bin/soxi', ['-d', 'rec'+fno+'.wav'])
+    child_process.spawn('/usr/bin/soxi', ['-d', fnam(fno)])
         .on('exit', function() {
             a = durs.match(/(\d\d):(\d\d):(\d\d\.\d\d)/);
             if (!a) { t = "can't get duration"; }
@@ -86,6 +99,7 @@ var devHandle = process.argv[2]; // Something like /dev/input/event0
 
 var init = function() {
     if (fs.existsSync(devHandle)) {
+        console.log("Setting up key actions");
         numkeys.setupKeyActions(devHandle, actions);
     } else {
         setTimeout(init, 3000);
