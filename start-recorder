@@ -3,7 +3,7 @@
 # Server start script tailored for personal use, don't expect explanation.
 
 touch ~/.reclog
-echo starting ks >> ~/.reclog
+echo starting recorder buttons >> ~/.reclog
 date >> ~/.reclog
 cd /home/pi/klipspringer
 /home/pi/.nvm/versions/node/v13.6.0/bin/node recorder.js /dev/input/event0 >> ~/.reclog 2>&1 &

@@ -25,14 +25,14 @@ var rec = null, play = null;
 (function() {
     var i, ch;
 
-    for (i = 0; i < 10; i++) {
+    for (i = 1; i < 10; i++) {
         ch = String.fromCharCode('0'.charCodeAt(0) + i);
         actions[ch] = setFnoFun(i, ch);
     }
 }());
 
 actions['\t'] = function() {
-    fno = (fno + 1) % 10;
+    fno++;
     speak(fno);
 }
 
@@ -93,6 +93,18 @@ actions['.'] = function() {
             }
             speak(t);
         }).stdout.on('data', function(buf) { durs += buf.toString(); });
+}
+
+var zerotime = 0;
+
+actions['0'] = function(time) { zerotime = time; }
+actions['\n'] = function(time) {
+    if (time - zerotime < 0.5) {
+        speak("shutting down")
+            .on('exit', function() {
+                child_process.spawn('/usr/bin/sudo', ['/sbin/shutdown', '-h', 'now']);
+            });
+    }
 }
 
 var devHandle = process.argv[2]; // Something like /dev/input/event0
