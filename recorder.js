@@ -45,8 +45,16 @@ var startrec = function() {
          '--buffer', '65536',
          '-q',
          fnam(fno)]);
-    rec.stdout.on('data', function(buf) { speak(buf.toString()); });
-    rec.stderr.on('data', function(buf) { speak("Error: "+buf.toString()); })
+    rec.stdout.on('data', function(buf) {
+        var s = buf.toString();
+        console.log(s);
+        speak(s);
+    });
+    rec.stderr.on('data', function(buf) {
+        var s = "Error: "+buf.toString();
+        console.log(s);
+        speak(s);
+    });
 }
 
 actions['+'] = function() {
@@ -71,7 +79,7 @@ actions['*'] = function() {
     if (play) { play.kill(); }
     speak("play")
         .on('exit', function() {
-            play = child_process.spawn('/usr/bin/play', [fnam(fno)]);
+            play = child_process.spawn('/usr/bin/play', ['-q', fnam(fno)]);
         });
 }
 
