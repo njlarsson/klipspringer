@@ -45,6 +45,8 @@ var startrec = function() {
          '--buffer', '65536',
          '-q',
          fnam(fno)]);
+    rec.stdout.on('data', function(buf) { speak(buf.toString()); });
+    rec.stderr.on('data', function(buf) { speak("Error: "+buf.toString()); })
 }
 
 actions['+'] = function() {
