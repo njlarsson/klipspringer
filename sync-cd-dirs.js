@@ -25,8 +25,15 @@
 //
 // If individual track names on slave and master differ in such a way that
 // sorting the names places the tracks in different order, things can get messy!
+//
+// If the current working directory contains a file called
+// 'sync-cd-dirs-ignore', each of its lines is expected to be either an agent or
+// agent/album, which should not be copied from the master to the slave.
 
 var fs = require('fs');
+
+var ignoremap = {};             // filled from file sync-cd-dirs-ignore
+
 
 // Called for track directories d0 and d1. Emits command by pushing them onto
 // script (a string array).
@@ -40,7 +47,9 @@ var cmpTitle = function(d0, d1, script) {
         f1 = files1[i];
         if (!f0 && !f1) { break; }
         else if (!f0) { script.push("rm -r '"+d1+"/"+f1+"'"); }
-        else if (!f1) { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); }
+        else if (!f1) {
+            if (!ignoremap[f0]) { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); } 
+        }
         else if (sametrack(f0, f1)) {
             s0 = fs.lstatSync(d0+"/"+f0);
             s1 = fs.lstatSync(d1+"/"+f1);
@@ -62,7 +71,6 @@ var cmpTitle = function(d0, d1, script) {
 
             if (s0.mtime > s1.mtime) { script.push("echo 'Data modification needs manual fix:' '"+d0+"/"+f0+"'"); }
         } else {
-            console.log("sametrack: "+sametrack(f0, f1));
             throw "Unusual case: "+d0+"/"+f0+", "+d1+"/"+f1;
         }
         i += 1;
@@ -89,7 +97,10 @@ var cmpDir = function(d0, d1, script, callist) {
         f1 = files1[j];
         if (!f0 && !f1) { break; }
         else if (!f0) { script.push("rm -r '"+d1+"/"+f1+"'"); j += 1; }
-        else if (!f1) { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); i += 1; }
+        else if (!f1) {
+            if (!ignoremap[d0+"/"+f0]) { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); }
+            i += 1;
+        }
         else if (f0 == f1) {
             callist[0](d0+"/"+f0, d1+"/"+f1, script, callist.slice(1));
             i += 1;
@@ -102,11 +113,30 @@ var cmpDir = function(d0, d1, script, callist) {
             if (!s1.isDirectory()) { throw "Not a directory: "+d1+"/"+f1; }
             
             if (f0 > f1) { script.push("rm -r '"+d1+"/"+f1+"'"); j += 1; }
-            else         { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); i += 1; }
+            else         {
+                if (!ignoremap[d0+"/"+f0]) { script.push("cp -r '"+d0+"/"+f0+"' '"+d1+"'"); }
+                i += 1;
+            }
         }
     }
 };
 
+var readignore = function(d0) {
+    var fnams, i;
+    try {
+        fnams = fs.readFileSync('sync-cd-dirs-ignore').toString().split("\n");
+    } catch (err) {
+        if (err.code != 'ENOENT') { throw err; }
+        console.error("No ignore file");
+        return;
+    }
+    for (i = 0; i < fnams.length; i += 1) {
+        if (fnams[i]) { ignoremap[d0+"/"+fnams[i]] = true; }
+    }
+}
+
+readignore(process.argv[2]);
+    
 var script = [], i;
 cmpDir(process.argv[2], process.argv[3], script, [cmpDir, cmpTitle]);
 for (i = 0; i < script.length; i += 1) {
