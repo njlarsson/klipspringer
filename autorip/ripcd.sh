@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/jesper/abcde_cwd || exit 1
+cd /home/klipspringer/abcde_cwd || exit 1
 abcde
