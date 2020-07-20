@@ -7,10 +7,14 @@ from time import sleep
 from ewmh import EWMH
 from subprocess import call
 
+print("starting xcaffeine")
+
 ewmh = EWMH()
 while True:
     win = ewmh.getActiveWindow()
     state = ewmh.getWmState(win, str=True)
     if '_NET_WM_STATE_FULLSCREEN' in state:
+        print("deactivating")
         call(['xscreensaver-command', '-deactivate'])
+    print("doing nothing")
     sleep(30)
