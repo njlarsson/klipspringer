@@ -4,5 +4,5 @@ Type=Application
 Terminal=true
 Icon=gnome-panel-launcher
 Name=ripcd
-Exec=/home/klipspringer/klipspringer/ripcd.sh %U
+Exec=/home/klipspringer/klipspringer/playripscripts/ripcd.sh %U
 Comment=cd rip script

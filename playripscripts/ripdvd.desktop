@@ -3,5 +3,5 @@ Version=1.0
 Type=Application
 Terminal=false
 Name=ripdvd
-Exec=/home/klipspringer/klipspringer/autorip/ripdvd.sh %U
+Exec=/home/klipspringer/klipspringer/playripscripts/ripdvd.sh %U
 Comment=dvd rip script
