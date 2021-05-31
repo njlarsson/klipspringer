@@ -54,7 +54,11 @@ var cmpTitle = function(d0, d1, script) {
             s0 = fs.lstatSync(d0+"/"+f0);
             s1 = fs.lstatSync(d1+"/"+f1);
 
-            if (!s0.isFile()) { throw "Not a file: "+d0+"/"+f0; }
+            if (!s0.isFile()) {
+                script.push("echo 'Not a file, ignoring:' '"+d0+"/"+f0+"'");
+                i += 1;
+                continue;2
+            }
             if (!s1.isFile()) { throw "Not a file: "+d1+"/"+f1; }
 
             if (s0.size !== s1.size) {
