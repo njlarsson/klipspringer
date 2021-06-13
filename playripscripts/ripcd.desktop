@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Type=Application
-Terminal=true
-Icon=gnome-panel-launcher
-Name=ripcd
-Exec=/home/klipspringer/klipspringer/playripscripts/ripcd.sh %U
-Comment=cd rip script

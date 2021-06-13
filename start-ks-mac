@@ -1,2 +1,0 @@
-#!/bin/bash
-caffeinate node main.js /Volumes/Intenso 9999 '' '' /Users/ae1925/klipspringer:/Users/ae1925/jars/jflac.jar
